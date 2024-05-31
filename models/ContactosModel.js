@@ -3,16 +3,17 @@ const { promisify } = require("util");
 
 class ContactosModel {
   constructor() {
-    this.db = new sqlite3.Database("./database/datosnuevos.db", (err) => {
+
+    this.db = new sqlite3.Database("./conf/test.db", (err) => {
       if (err) {
         console.error(err.message);
         return
       }
-      console.log("Se ha completado la función 'Ingresado en la base de datos SQLite'.");
+      console.log("Conectado a la base de datos SQLite.");
     });
 
     this.db.run(
-      "CREATE TABLE IF NOT EXISTS datos (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, nombre TEXT, mensaje TEXT, teléfono NUMBER, ip TEXT, fecha TEXT, country TEXT)",
+      "CREATE TABLE IF NOT EXISTS contactos (email TEXT, nombre TEXT, mensaje TEXT, ip TEXT, fecha TEXT, pais TEXT, id INTEGER PRIMARY KEY AUTOINCREMENT)",
       (err) => {
         if (err) {
           console.error(err.message);
@@ -21,34 +22,31 @@ class ContactosModel {
     );
   }
 
-  crearDatos(email, nombre, mensaje, telefono, ip, fecha, country) {
+  crearContacto(email, nombre, mensaje, ip, fecha, pais) {
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO datos (email, nombre, mensaje, telefono, ip, fecha, country) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      this.db.run(sql, [email, nombre, mensaje, telefono, ip, fecha, country], function (err) {
+      const sql = `INSERT INTO contactos (email, nombre, mensaje, ip, fecha, pais) VALUES (?, ?, ?, ?, ?, ?)`;
+      this.db.run(sql, [email, nombre, mensaje, ip, fecha, pais], function (err) {
         if (err) {
           console.error(err.message);
           reject(err);
         }
-        console.log(`ID ${this.lastID}`);
+        console.log(`Se ha insertado una fila con el ID ${this.lastID}`);
         resolve(this.lastID);
       });
     });
   }
-  async obtenerDatos(email) {
-    const sql = `SELECT * FROM datos WHERE email = ?`;
+
+  async obtenerContacto(email) {
+    const sql = `SELECT * FROM contactos WHERE email = ?`;
     const get = promisify(this.db.get).bind(this.db);
     return await get(sql, [email]);
   }
 
-  async obtenerAllDatos() {
-    const sql = `SELECT * FROM datos`;
+  async obtenerAllContactos() {
+    const sql = `SELECT * FROM contactos`;
     const all = promisify(this.db.all).bind(this.db);
     return await all(sql);
   }
-
-  
 }
 
-
 module.exports = ContactosModel;
-
