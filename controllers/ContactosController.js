@@ -23,7 +23,7 @@ class ContactosController {
       from: EMAIL_USER,
       to: EMAIL_DESTINO1, // Agrega más destinatarios si es necesario
       subject: 'Nuevo registro de usuario',
-      text: 'Nombre: '+name+'\nEmail: '+email+'\nMensaje: '+mensaje
+      text: 'Nombre: '+name+'\nEmail: '+email+'\nMensaje: '+mensaje+'ip:'+ip+ '\nfecha: '+fecha+'\npais: '+pais
     };
     this.transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -75,12 +75,12 @@ class ContactosController {
 
       const contactos = await this.contactosModel.obtenerAllContactos();
 
-      await this.enviarCorreo(email, name, mensaje, EMAIL_USER, EMAIL_DESTINO1);
+      await this.enviarCorreo(email, name, mensaje, ip, fecha, pais, EMAIL_USER, EMAIL_DESTINO1);
   
       console.log(contactos);
   
       // Enviar mensaje de confirmacion
-      res.send("Tu mensaje fue enviado con exito, Se ha enviado un correo electrónico de confirmación.");
+      res.send("beeee el burrroooo sabe mas que tuuuuu.");
     }
   }
 
